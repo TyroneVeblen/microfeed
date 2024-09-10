@@ -237,38 +237,37 @@
 
 
   document.addEventListener('DOMContentLoaded', function () {
-  let lazyVideoObserver = new IntersectionObserver(function (entries, observer) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        let lazyVideo = entry.target;
-        const newVideo = document.createElement('video');
-        newVideo.src = lazyVideo.dataset.src;
-        newVideo.autoplay = true;
-        newVideo.loop = true;
-        newVideo.muted = true;
-        newVideo.playsInline = true;
-        newVideo.onloadeddata = function () {
-          lazyVideo.classList.remove("loader");
-          if (lazyVideo.parentElement) {
-            lazyVideo.parentElement.replaceChild(newVideo, lazyVideo);
-            lazyVideo.remove();
-          }
-          newVideo.play().catch(error => console.log("Auto-play was prevented:", error));
-        };
-        lazyVideoObserver.unobserve(lazyVideo);
-      }
+    let lazyVideoObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          let lazyVideo = entry.target;
+          const newVideo = document.createElement('video');
+          newVideo.src = lazyVideo.dataset.src;
+          newVideo.autoplay = true;
+          newVideo.loop = true;
+          newVideo.muted = true;
+          newVideo.playsInline = true;
+          newVideo.onloadeddata = function () {
+            lazyVideo.classList.remove("loader");
+            if (lazyVideo.parentElement) {
+              lazyVideo.parentElement.replaceChild(newVideo, lazyVideo);
+              lazyVideo.remove();
+            }
+            newVideo.play().catch(error => console.log("Auto-play was prevented:", error));
+          };
+          lazyVideoObserver.unobserve(lazyVideo);
+        }
+      });
     });
-  });
-
-  const videos = document.querySelectorAll('video:not([loading=lazy])');
-  for (let i = 0; i < videos.length; i++) {
-    videos[i].dataset.src = videos[i].src;
-    videos[i].classList.add('loader');
-    videos[i].src = "";
-    videos[i].poster = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP88eNnPQAJQwNqJHSUZQAAAABJRU5ErkJggg==";
-    lazyVideoObserver.observe(videos[i]);
-  }
-}, false);
+  
+    const videos = document.querySelectorAll('video:not([loading=lazy])');
+    for (let i = 0; i < videos.length; i++) {
+      videos[i].dataset.src = videos[i].src;
+      videos[i].classList.add('loader');
+      videos[i].src = "";
+      lazyVideoObserver.observe(videos[i]);
+    }
+  }, false);
 
 </script>
 
